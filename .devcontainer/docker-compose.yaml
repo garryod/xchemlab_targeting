@@ -1,0 +1,41 @@
+version: '3.8'
+
+x-postgres-variables:
+  &postgres-variables
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_PORT: 5432
+
+services:
+  targeting:
+    image: docker.io/library/rust:1.67-bullseye
+    env_file:
+      - .env
+    environment:
+      <<: *postgres-variables
+      POSTGRES_HOSTNAME: targeting-database
+      DATABASE_URL: postgres://postgres:postgres@targeting-database:5432
+    volumes:
+      - ..:/workspace:cached,Z
+    command: sleep infinity
+
+  targeting-database:
+    image: docker.io/library/postgres:14.1
+    restart: unless-stopped
+    environment:
+      <<: *postgres-variables
+    env_file:
+      - .env
+
+  targeting-image-store:
+    image: docker.io/openio/sds:20.04
+    restart: unless-stopped
+    env_file:
+      - .env
+
+  targeting-policy-agent:
+    image: docker.io/openpolicyagent/opa:0.49.0
+    restart: unless-stopped
+    env_file:
+      - .env
+    command: run --server

@@ -1,0 +1,19 @@
+{
+	"name": "Targeting Service",
+	"dockerComposeFile": "docker-compose.yaml",
+	"service": "targeting",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"rust-lang.rust-analyzer",
+				"tamasfe.even-better-toml"
+			]
+		}
+	},
+	"initializeCommand": "bash -c 'for i in $HOME/.inputrc; do [ -f $i ] || touch $i; done'",
+	"mounts": [
+		"source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind",
+		"source=${localEnv:HOME}/.inputrc,target=/root/.inputrc,type=bind"
+	],
+	"workspaceFolder": "/workspace"
+}
